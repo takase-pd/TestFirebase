@@ -19,30 +19,30 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     return Scaffold(
       key: scaffoldKey,
       body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            StreamBuilder<List<StationsRecord>>(
-              stream: queryStationsRecord(
-                singleRecord: true,
-              ),
-              builder: (context, snapshot) {
-                // Customize what your widget looks like when it's loading.
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                List<StationsRecord> listTileStationsRecordList = snapshot.data;
-                // Customize what your widget looks like with no query results.
-                if (snapshot.data.isEmpty) {
-                  // return Container();
-                  // For now, we'll just include some dummy data.
-                  listTileStationsRecordList =
-                      createDummyStationsRecord(count: 1);
-                }
-                final listTileStationsRecord = listTileStationsRecordList.first;
+        child: StreamBuilder<List<StationsRecord>>(
+          stream: queryStationsRecord(),
+          builder: (context, snapshot) {
+            // Customize what your widget looks like when it's loading.
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+            List<StationsRecord> listViewStationsRecordList = snapshot.data;
+            // Customize what your widget looks like with no query results.
+            if (snapshot.data.isEmpty) {
+              // return Container();
+              // For now, we'll just include some dummy data.
+              listViewStationsRecordList = createDummyStationsRecord(count: 4);
+            }
+            return ListView.builder(
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.vertical,
+              itemCount: listViewStationsRecordList.length,
+              itemBuilder: (context, listViewIndex) {
+                final listViewStationsRecord =
+                    listViewStationsRecordList[listViewIndex];
                 return ListTile(
                   title: Text(
-                    listTileStationsRecord.name,
+                    listViewStationsRecord.name,
                     style: FlutterFlowTheme.title3.override(
                       fontFamily: 'Poppins',
                     ),
@@ -62,8 +62,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   dense: false,
                 );
               },
-            )
-          ],
+            );
+          },
         ),
       ),
     );
